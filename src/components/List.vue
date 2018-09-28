@@ -4,7 +4,7 @@
     <header>
       <h2>Incident Reports</h2>
       <span class="button-bar">
-        <button @click="exportCSV()">Export as CSV</button>
+        <button @click="exportCSV()" v-if="incidentCount > 0">Export as CSV</button>
         <button @click="addIncident()">Add Incident</button>
       </span>
     </header>
