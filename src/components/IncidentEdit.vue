@@ -99,8 +99,6 @@
           // deep-linked
           this.$store.dispatch('getIncident', this.$route.params.incident_id)
             .then(() => {
-              console.log('IncidentEdit.mounted() incident loaded');
-              console.dir(this.activeIncident);
               this.incident = Object.assign({}, this.activeIncident)
             })
             .catch(this.handleError);
@@ -141,7 +139,13 @@
           let dispatchMethod = this.isNew ? 'addIncident' : 'updateIncident';
           this.$store.dispatch(dispatchMethod, this.incident)
             .then(() => {
-              this.$router.replace('/list');
+              if (this.isNew) {
+                // transition to incident detail view & remove edit from history
+                this.$router.replace('/incident/' + this.activeIncident.id);
+              } else {
+                // send user back where they came from
+                this.closeIncident();
+              }
             })
             .catch(this.handleError)
         }

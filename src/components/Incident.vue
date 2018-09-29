@@ -83,7 +83,6 @@
     },
 
     mounted() {
-      console.log('Incident.mounted()');
       if (!this.incident) {
         // deep-linked
         this.$store.dispatch('getIncident', this.$route.params.incident_id)

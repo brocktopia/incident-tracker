@@ -17,20 +17,24 @@ export default new Vuex.Store({
   strict: true,
   state: {
     incidents: [],
+    sortedIncidents: [],
     activeIncident: null,
     incidentsLoaded: false
   },
   actions: {
 
     getIncidents({commit}) {
-      return this.$db.incidents.toArray()
+      return this.$db.incidents
+        .reverse() // default sort on most recently added incident
+        .toArray()
         .then(incidents => {
           return commit('setIncidents', incidents);
         })
     },
 
     getIncident({commit}, incident_id) {
-      return this.$db.incidents.get({'id':Number(incident_id)})
+      return this.$db.incidents
+        .get({'id':Number(incident_id)})
         .then((incident) => {
           return commit('setActiveIncident', incident);
         })
@@ -44,24 +48,32 @@ export default new Vuex.Store({
     },
 
     addIncident({commit}, incident) {
-      return this.$db.incidents.add(incident)
+      return this.$db.incidents
+        .add(incident)
         .then(id => {
           incident.id = id;
-          return commit('addIncident', incident)
+          commit('addIncident', incident);
+          return commit('setActiveIncident', incident)
         })
         .catch(err => {throw(err)})
     },
 
     updateIncident({commit}, incident) {
-      return this.$db.incidents.put(incident)
+      return this.$db.incidents
+        .put(incident)
         .then(() => {
           return commit('updateIncident', incident)
         })
         .catch(err => {throw(err)})
     },
 
+    setSortedIncidents({commit}, sortedIncidents) {
+      return commit('setSortedIncidents', sortedIncidents);
+    },
+
     deleteIncident({commit}, id) {
-      return this.$db.incidents.delete(id)
+      return this.$db.incidents
+        .delete(id)
         .then(() => {
           return commit('deleteIncident', id)
         })
@@ -71,7 +83,8 @@ export default new Vuex.Store({
     deleteActiveIncident({commit, state}) {
       let id = state.activeIncident.id;
       if (id) {
-        return this.$db.incidents.delete(id)
+        return this.$db.incidents
+          .delete(id)
           .then(() => {
             commit('clearActiveIncident');
             return commit('deleteIncident', id)
@@ -99,7 +112,7 @@ export default new Vuex.Store({
     },
 
     addIncident(state, incident) {
-      state.incidents.unshift(incident)
+      state.incidents.unshift(incident);
     },
 
     updateIncident(state, incident) {
@@ -109,6 +122,10 @@ export default new Vuex.Store({
       } else {
         throw({message:'Could not find incident by id ['+incident.id+']'})
       }
+    },
+
+    setSortedIncidents(state, sortedIncidents) {
+      state.sortedIncidents = sortedIncidents;
     },
 
     deleteIncident(state, id) {

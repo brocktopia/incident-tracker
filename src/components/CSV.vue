@@ -47,13 +47,13 @@
 
     mounted() {
       if (this.state.incidentsLoaded) {
-        this.generateCSV(this.state.incidents);
+        this.generateCSV(this.state.sortedIncidents);
       } else {
         // deep-linked
         this.$store.dispatch('getIncidents')
           .then(() => {
-            if (this.state.incidents.length > 0) {
-              this.generateCSV(this.state.incidents);
+            if (this.state.sortedIncidents.length > 0) {
+              this.generateCSV(this.state.sortedIncidents);
             } else {
               this.closeExport();
             }

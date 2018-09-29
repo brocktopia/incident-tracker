@@ -22,6 +22,7 @@
         :data="incidents"
         :filterKey="searchQuery"
         @rowSelect="incidentSelected"
+        @sortedData="onDataSort"
       ></data-grid>
 
       <p class="empty-msg" v-if="incidents.length === 0">There are currently no incident reports.<br>Select the <b>Add Incident</b> button to create an new incident report.</p>
@@ -37,6 +38,8 @@
   import DataGrid from './DataGrid'
 
   export default {
+
+    name:'list',
 
     components: {
       DataGrid
@@ -55,18 +58,25 @@
       incidents() {
         return this.$store.state.incidents;
       },
+      incidentsLoaded() {
+        return this.$store.state.incidentsLoaded;
+      },
       incidentCount() {
         return this.$store.state.incidents.length;
       }
     },
 
     mounted() {
-      // get incidents from store
-      this.$store.dispatch('getIncidents')
-        .then(() => {
-          this.isLoading = false;
-        })
-        .catch(this.handleError)
+      if(!this.incidentsLoaded) {
+        // get incidents from store
+        this.$store.dispatch('getIncidents')
+          .then(() => {
+            this.isLoading = false;
+          })
+          .catch(this.handleError)
+      } else {
+        this.isLoading = false;
+      }
     },
 
     methods: {
@@ -88,10 +98,15 @@
         this.$router.push('/csv')
       },
 
+      onDataSort(data) {
+        // record sorted state for CSV view
+        this.$store.dispatch('setSortedIncidents', data);
+      },
+
       handleError(err) {
         console.warn('List.handleError()');
         console.dir(err);
-        vm.isLoading = false;
+        this.isLoading = false;
       }
     }
 
