@@ -8,6 +8,7 @@ It persists data to local storage and can export data in CSV format.
 
 * [VueJS 2.x](https://github.com/vuejs/vue)
 * [Vue-router](https://github.com/vuejs/vue-router)
+* [Vuex](https://vuex.vuejs.org/)
 * [vuejs-datepicker](https://github.com/charliekassel/vuejs-datepicker)
 * [Dexie.js](http://dexie.org/)
 * [Moment.js](https://momentjs.com/)
